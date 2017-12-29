@@ -1,14 +1,24 @@
 var roleHarvester = require('role.harvester');
+var roleUpgrader = require('role.Upgrader');
+var roleLoad = require('role.load');
+
+Game.spawns['Spawn1'].createCreep([WORK , MOVE , CARRY ],'worker1');
+Game.spawns['Spawn1'].createCreep([WORK , MOVE , CARRY ],'worker2');
+Game.spawns['Spawn1'].createCreep([WORK , MOVE , CARRY ],'loadworker1');
 
 module.exports.loop = function () {
-    var index = 1;
-    if(Game.spawns['Spawn1'].energy >= 300 && Game.creeps.length < 5){ 
-        var name = 'worker' + index;
-        Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE , MOVE], name);
-        index = index + 1;
-    }
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
-        roleHarvester.run(creep);
+        if(name == "Tyler")
+            roleUpgrader.run(creep);
+        else{
+            for(var name in Game.constructionSites){
+                if(Game.constructionSites[name].progress < Game.constructionSites[name].progressTotal)
+                    roleLoad.run(creep,Game.constructionSites[name]);
+            }
+        }
+        // else 
+        //     roleHarvester.run(creep);
     }
+    
 }  
